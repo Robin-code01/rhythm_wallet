@@ -96,9 +96,8 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
 
 1. Install Python dependencies:
     ```
-    pip install -r requirements.txt
+    pip install -r /backend/music/requirements.txt
     ```
-    (Or use `/backend/music/requirements.txt` if not at repo root.)
 2. Set environment variables (see below).
 3. Run migrations:
     ```
@@ -124,7 +123,7 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
     ```
 2. Set API base URL in `.env`:
     ```
-    VITE_API_URL=http://localhost:8080
+    VITE_API_URL=http://localhost:8080/api
     ```
 3. Start the development server:
     ```
@@ -151,24 +150,6 @@ nix develop
 
 ---
 
-## CORS and Django REST Framework
-
-If running frontend and backend on different origins, install and configure `django-cors-headers`:
-
-- Add to `requirements.txt`:
-    ```
-    django-cors-headers
-    djangorestframework
-    ```
-- In `settings.py`:
-    ```python
-    INSTALLED_APPS += ['corsheaders', 'rest_framework']
-    MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
-    CORS_ALLOW_ALL_ORIGINS = True  # For development only
-    ```
-
----
-
 ## Testing and Demo Data
 
 - **Run backend tests:**
@@ -186,25 +167,21 @@ If running frontend and backend on different origins, install and configure `dja
 
 Minimal list (see `views.py` for full docs):
 
-- **List all songs:**  
+- **Get all song entries:**  
     ```
-    curl http://localhost:8080/api/songs/
+    curl http://localhost:8080/api/entries/
     ```
 - **Get album details:**  
     ```
-    curl http://localhost:8080/api/albums/1/
+    curl http://localhost:8080/api/album/1/
     ```
 - **Get cover art:**  
     ```
-    curl http://localhost:8080/api/cover/1/
+    curl http://localhost:8080/api/cover_art/1/
     ```
 - **List playlists:**  
     ```
     curl http://localhost:8080/api/playlists/
-    ```
-- **Play audio:**  
-    ```
-    curl http://localhost:8080/api/audio/1/
     ```
 
 ---
