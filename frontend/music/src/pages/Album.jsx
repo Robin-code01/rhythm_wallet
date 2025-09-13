@@ -72,10 +72,10 @@ export default function Album() {
             <Box fontWeight="bold">{song.album__title}</Box>
             <Box display={"flex"} alignItems="center" gap="5px">
               <img src={calendar} height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"/>
-              : {song.release_date}</Box>
+              {song.release_date}</Box>
             <Box display="flex" alignItems="center" gap="5px">
               <img src={clock} height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"/>
-              : {song.duration} seconds</Box>
+              {song.duration} s</Box>
             </Flex>
           </Flex>
         </Box>
