@@ -42,7 +42,7 @@ export default function Albums() {
   }, [])
 
   useEffect(() => {
-    console.log(state)
+    // console.log(state)
   }, [state])
 
   return (

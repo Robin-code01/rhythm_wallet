@@ -26,7 +26,7 @@ function getSongs({state, setState}) {
     fetch(`${API}/entries/`)
     .then((response) => response.json())
     .then((data) => {
-        console.log(data.songs);
+        // console.log(data.songs);
 
         let name_sort_songs = data.songs.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -52,7 +52,7 @@ function createPlaylist({state, setState}) {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
+            // console.log(data);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -72,7 +72,7 @@ export default function New_playlist() {
     }, [])
 
     useEffect(() => { // Debug
-        console.log(state.selectedSongs)
+        // console.log(state.selectedSongs)
     }, [state.selectedSongs])
 
     return(
@@ -83,7 +83,7 @@ export default function New_playlist() {
             <Box padding={"20px"} border={"1px solid grey"} borderRadius={"8px"} maxWidth={"700px"} margin={"auto"}>
                 <Form onSubmit={(event) => {
                     event.preventDefault();
-                    console.log(event.currentTarget.elements);
+                    // console.log(event.currentTarget.elements);
                     createPlaylist({state, setState})
                     navigate("/playlists");
                 }}>

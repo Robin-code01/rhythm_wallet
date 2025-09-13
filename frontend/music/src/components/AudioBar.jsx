@@ -9,7 +9,7 @@ function NextSong(currentSong, state, setState) {
             ...prevState,
             current_song: state.songs[nextIndex].song_id,
         }));
-        console.log("Next song:", currentSong);
+        // console.log("Next song:", currentSong);
     }
 }
 
@@ -21,18 +21,20 @@ function PrevSong(currentSong, state, setState) {
             ...prevState,
             current_song: state.songs[prevIndex].song_id,
         }));
-        console.log("Previous song:", currentSong);
+        // console.log("Previous song:", currentSong);
     }
 }
 
 export default function AudioBar ({currentSong, state, setState}) {
     const audioRef = useRef(null);
     useEffect(() => {
-        console.log("AudioBar received currentSong:", currentSong);
+        // console.log("AudioBar received currentSong:", currentSong);
 
         if (audioRef.current) {
             audioRef.current.load(); // Reload the audio element with the new source
-            audioRef.current.play();
+            audioRef.current.play().catch((error) => {
+                console.warn("Error playing audio:", error);
+            });;
         }
     }, [currentSong])
 

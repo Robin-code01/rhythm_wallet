@@ -17,7 +17,7 @@ function getEntries({state, setState}, search) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data.songs);
+      // console.log(data.songs);
       // data.songs.forEach((song) => {
       //   setState((prevState) => ({
       //     ...prevState,
@@ -62,11 +62,11 @@ export default function Albums() {
   }, [])
 
   useEffect(() => {
-    console.log(state)
+    // console.log(state)
   }, [state])
 
   useEffect(() => {
-    console.log(search)
+    // console.log(search)
     getEntries({state, setState}, search)
   }, [search])
 

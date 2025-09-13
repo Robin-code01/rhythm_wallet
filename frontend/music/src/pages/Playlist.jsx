@@ -18,7 +18,7 @@ function getEntries({state, setState}, search, playlist_id) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data.songs);
+      // console.log(data.songs);
       // data.songs.forEach((song) => {
       //   setState((prevState) => ({
       //     ...prevState,
@@ -68,18 +68,18 @@ export default function Create() {
   }, [])
 
   useEffect(() => {
-    console.log(state)
+    // console.log(state)
   }, [state])
 
   useEffect(() => {
-    console.log(search)
+    // console.log(search)
     getEntries({state, setState}, search, playlist_id)
   }, [search])
 
 useEffect(() => { // Debug
   const currentSong = state.songs.find((song) => song.song_id == state.current_song);
   if (currentSong) {
-    console.log("Current song changed to:", currentSong.title, currentSong.file_path);
+    // console.log("Current song changed to:", currentSong.title, currentSong.file_path);
   }
 }, [state.current_song]);
 

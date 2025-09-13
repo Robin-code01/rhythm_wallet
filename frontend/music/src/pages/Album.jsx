@@ -22,7 +22,7 @@ function getEntries({state, setState}, search, album_id) {
 
     let number_sort_songs = data.songs.sort((a, b) => a.song_number - b.song_number);
 
-    console.log(number_sort_songs);
+    // console.log(number_sort_songs);
 
     setState((prevState) => ({
       ...prevState,
