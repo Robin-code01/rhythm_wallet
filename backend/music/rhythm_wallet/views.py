@@ -160,47 +160,83 @@ def playlists(request):
     playlists = Playlist.objects.all().values('playlist_id', 'name', 'created_at')
     return Response({"playlists": playlists})
 
-@api_view(['GET'])
+@api_view(['GET', "DELETE"])
 def playlist_entries(request, playlist_id):
+    if request.method == "GET":
+        search = request.GET.get("q")
+
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            
+            if search:
+                songs = playlist.songs.filter(title__icontains=search).values('song_id', 'title', 'artist__name', 'album__title', 'duration', 'release_date', "file_path", "bit_rate", "sample_rate", "bit_depth", "song_number")
+            else:
+                songs = playlist.songs.values('song_id', 'title', 'artist__name', 'album__title', 'duration', 'release_date', "file_path", "bit_rate", "sample_rate", "bit_depth", "song_number")
+            
+            song_list = []
+
+            for song in songs:
+                song_list.append({
+                    'song_id': song.get("song_id"),
+                    'title': song.get("title"),
+                    'artist__name': song.get("artist__name"),
+                    'album__title': song.get("album__title") if song.get("album") else None,
+                    'duration': song.get("duration"),
+                    'release_date': song.get("release_date"),
+                    "bit_rate": song.get("bit_rate"),
+                    "sample_rate": song.get("sample_rate"),
+                    "bit_depth": song.get("bit_depth"),
+                    "song_number": song.get("song_number"),
+                    "file_path": song.get("file_path").replace("/home/robin/pendrive/src/Music/frontend/music/public", ""),
+                    'cover_art_url': request.build_absolute_uri(
+                        reverse('song_cover_art', args=[song.get("song_id")])
+                    ) if song.get("song_id") else None,
+                })
+
+            context = {
+                'playlist_id': playlist.playlist_id,
+                'name': playlist.name,
+                'created_at': playlist.created_at,
+                'songs': song_list,
+            }
+
+            return Response(context)
+
+        except Playlist.DoesNotExist:
+            raise Http404("Playlist not found")
+    elif request.method == "DELETE":
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            playlist.delete()
+            return Response({"message": "Playlist deleted"})
+        except Playlist.DoesNotExist:
+            raise Http404("Playlist not found")
+    else:
+        return Response({"error": "Use GET or DELETE method"})
     
-    search = request.GET.get("q")
-
-    try:
-        playlist = Playlist.objects.get(pk=playlist_id)
+@api_view(["POST"])
+def edit_playlist(request):
+    if request.method == "POST":
         
-        if search:
-            songs = playlist.songs.filter(title__icontains=search).values('song_id', 'title', 'artist__name', 'album__title', 'duration', 'release_date', "file_path", "bit_rate", "sample_rate", "bit_depth", "song_number")
-        else:
-            songs = playlist.songs.values('song_id', 'title', 'artist__name', 'album__title', 'duration', 'release_date', "file_path", "bit_rate", "sample_rate", "bit_depth", "song_number")
+        data = request.data
+        playlist_id = data.get("playlist_id")
+        playlist_name = data.get("name", "My Playlist")
+        playlist_songs = data.get("songs", [])
         
-        song_list = []
-
-        for song in songs:
-            song_list.append({
-                'song_id': song.get("song_id"),
-                'title': song.get("title"),
-                'artist__name': song.get("artist__name"),
-                'album__title': song.get("album__title") if song.get("album") else None,
-                'duration': song.get("duration"),
-                'release_date': song.get("release_date"),
-                "bit_rate": song.get("bit_rate"),
-                "sample_rate": song.get("sample_rate"),
-                "bit_depth": song.get("bit_depth"),
-                "song_number": song.get("song_number"),
-                "file_path": song.get("file_path").replace("/home/robin/pendrive/src/Music/frontend/music/public", ""),
-                'cover_art_url': request.build_absolute_uri(
-                    reverse('song_cover_art', args=[song.get("song_id")])
-                ) if song.get("song_id") else None,
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            playlist.name = playlist_name
+            playlist.songs.set(Song.objects.filter(song_id__in=playlist_songs).all())
+            playlist.save()
+            return Response({
+                "message": "Playlist updated",
+                "playlist_id": playlist.playlist_id,
+                "name": playlist.name,
             })
-
-        context = {
-            'playlist_id': playlist.playlist_id,
-            'name': playlist.name,
-            'created_at': playlist.created_at,
-            'songs': song_list,
-        }
-
-        return Response(context)
-
-    except Playlist.DoesNotExist:
-        raise Http404("Playlist not found")
+        except Playlist.DoesNotExist:
+            raise Http404("Playlist not found")
+        
+    else:
+        return Response({
+            "error": "Use Post method"
+        })

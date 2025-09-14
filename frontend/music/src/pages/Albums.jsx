@@ -133,7 +133,6 @@ export default function Albums() {
             )}
           </SimpleGrid>
         </Box>
-        <AudioBar currentSong={state.songs.find((song) => song.song_id == state.current_song)} state={state} setState={setState} />
     </>
   )
 }

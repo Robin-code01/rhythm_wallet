@@ -1,6 +1,6 @@
 import Navbar from "../components/NavBar"
 import AudioBar from "../components/AudioBar"
-import {Heading, Spacer, Flex, Box, VStack, SimpleGrid} from '@chakra-ui/react'
+import {Heading, Spacer, Flex, Box, VStack, SimpleGrid, Button} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -26,6 +26,31 @@ function getPlaylists({state, setState}) {
 //     current_song: song_id,
 //   }))
 // }
+function deletePlaylist(playlist, {state, setState, navigate}) {
+  if (!window.confirm(`Are you sure you want to delete the playlist "${playlist.name}"? This action cannot be undone.`)) {
+    return;
+  }
+  fetch(`${API}/entries/playlist/${playlist.playlist_id}/`, {
+    method: "DELETE",
+  })
+    .then((result) => {
+      if (result.ok) {
+        // Remove the deleted playlist from state
+        console.log(result.message); //DEBUG
+        setState((prevState) => ({
+          ...prevState,
+          playlists: prevState.playlists.filter((p) => p.playlist_id !== playlist.playlist_id),
+        }));
+        // Navigate to /playlists after deletion
+        navigate("/playlists/");
+      } else {
+        console.error("Failed to delete playlist");
+      }
+  })
+    .catch((error) => {
+      console.error("Error deleting playlist:", error);
+    });
+}
 
 export default function Albums() {
   const navigate = useNavigate();
@@ -111,11 +136,22 @@ export default function Albums() {
                 <Heading size="xl">{playlist.name}</Heading>
                 <Box>Created at: {new Date(playlist.created_at).toLocaleDateString()}</Box>
               </Box>
+              <Box position="absolute" bottom={2} right={4} zIndex={2} fontSize="sm" color="gray.400">
+                <Button bgColor={"white"} color={"black"} marginRight={"10px"} onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  deletePlaylist(playlist, {state, setState, navigate});
+                }}>Delete</Button>
+                <Button bgColor={"white"} color={"black"} onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate(`/playlists/edit/${playlist.playlist_id}`);
+                }}>Edit</Button>
+              </Box>
             </Box>
             ))}
           </SimpleGrid>
         </Box>
-        <AudioBar currentSong={state.songs.find((song) => song.song_id == state.current_song)} state={state} setState={setState} />
     </>
   )
 }
