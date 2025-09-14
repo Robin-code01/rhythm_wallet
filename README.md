@@ -33,7 +33,6 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
 - **Mobile-responsive:** ✔️ Chakra UI, tested on multiple devices.
 - **requirements.txt present:** ✔️ See repo root or `/backend/music/requirements.txt`.
 - **README with all required sections:** ✔️ This file.
-- **API endpoints and documentation:** ✔️ See “API Endpoints” below.
 - **How to run, environment, and config:** ✔️ See “How to Run” and “Configuration” below.
 - **Tests/demo data:** ✔️ See “Testing and Demo Data” below.
 
@@ -44,13 +43,13 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
 - **Lossless FLAC Audio Playback:** Enjoy your music in its original, uncompressed quality.
 - **Automatic Metadata Extraction:** Song title, artist, album, and cover art are extracted from FLAC files and stored in the database.
 - **Dynamic Album and Playlist Management:** Browse albums, create and edit playlists, and view detailed song information.
-- **Custom Audio Player:** Play, pause, skip, and seek within tracks. The player displays current song metadata and cover art.
+- **Custom Audio Player:** Play, pause, skip, and seek within tracks. The player displays current song metadata, techinical details, and cover art.
 - **Responsive Design:** Fully mobile-friendly interface, adapting seamlessly to phones, tablets, and desktops.
 - **Chakra UI Powered:** Consistent, accessible, and themeable UI components for a polished user experience.
 - **Cover Art Rendering:** Embedded album art is extracted and displayed throughout the app, including in the player and album views. User can choose compressed or original quality.
 - **Fast Search and Filtering:** Quickly find songs, albums, or artists with instant search and filter options.
 - **Efficient Asset Streaming:** Audio and images are streamed directly from the backend for fast, reliable playback and display.
-- **Reproducible Development Environment:** Nix flake ensures all dependencies are pinned and easily reproducible.
+- **Reproducible Development Environment:** Nix flake and npm modules ensures all dependencies are pinned and easily reproducible.
 
 ---
 
@@ -69,18 +68,16 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
     - **admin.py, apps.py, tests.py**: Standard Django files.
 - **frontend/music/**
   - **src/**: React source code.
-    - **pages/**: Main pages (Dashboard, Albums, Album, Playlists, Playlist, New Playlist).
-    - **components/**: Reusable UI components (NavBar, AudioBar, AlbumCard, PlaylistCard).
-    - **context/**: React context for audio bar state.
+    - **pages/**: Main pages (Dashboard, Albums, Album, Playlists, Playlist, New Playlist, Edit Playlist).
+    - **components/**: Reusable UI components (NavBar, AudioBar).
     - **layouts/**: Root layout for routing.
     - **main.jsx, App.jsx**: App entry point and router.
-    - **index.css, App.css**: Styling.
   - **public/**: Static assets (cover art, icons, etc.).
   - **package.json**: Frontend dependencies and scripts.
   - **vite.config.js**: Vite configuration.
   - **.env**: API URL configuration.
 - **flake.nix**: Nix flake for reproducible development environment (Python, Node.js, dependencies).
-- **requirements.txt**: Python dependencies for the backend (repo root or `/backend/music/requirements.txt`).
+- **requirements.txt**: Python dependencies for the backend (not required if using nix develop) (repo root or `/backend/music/requirements.txt`).
 
 ---
 
@@ -98,20 +95,24 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
     ```
     pip install -r /backend/music/requirements.txt
     ```
-2. Set environment variables (see below).
-3. Run migrations:
+    OR
+   ```
+    nix develop
+   ```
+3. Set environment variables (see below).
+4. Run migrations:
     ```
     cd backend/music
     python manage.py migrate
     ```
-4. Populate the database with your music:
+5. Populate the database with your music:
     ```
     python index.py
     ```
    (Place your FLAC files in `frontend/music/public/Media/` before running.)
-5. Start the Django server:
+6. Start the Django server:
     ```
-    python manage.py runserver 8080
+    python manage.py runserver 0.0.0.0:8080
     ```
 
 ### Frontend
@@ -123,20 +124,13 @@ Rhythm Wallet is a technically challenging, media-focused web app that goes well
     ```
 2. Set API base URL in `.env`:
     ```
-    VITE_API_URL=http://localhost:8080/api
+    VITE_API_URL=http://127.0.0.1:8080/api
     ```
 3. Start the development server:
     ```
     npm run dev
     ```
 4. Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-### Using Nix (optional)
-
-If you have Nix installed, you can enter a shell with all dependencies by running:
-```
-nix develop
-```
 
 ---
 
@@ -147,19 +141,6 @@ nix develop
 - **DEBUG:** Set `DEBUG=True` for development.
 - **Static files:** If deploying, run `python manage.py collectstatic`.
 - **Frontend API URL:** Set `VITE_API_URL` in `frontend/music/.env` to match your backend server.
-
----
-
-## Testing and Demo Data
-
-- **Run backend tests:**
-    ```
-    cd backend/music
-    python manage.py test
-    ```
-- **Load demo data:**  
-  Run `python index.py` after placing a few FLAC files in `frontend/music/public/Media/`.  
-  (You may also provide a `fixture.json` and load with `python manage.py loaddata fixture.json`.)
 
 ---
 
@@ -183,13 +164,6 @@ Minimal list (see `views.py` for full docs):
     ```
     curl http://localhost:8080/api/playlists/
     ```
-
----
-
-## Screenshots
-
-![Dashboard Screenshot](frontend/music/public/screenshot-dashboard.png)
-![Mobile Player Screenshot](frontend/music/public/screenshot-mobile.png)
 
 ---
 
