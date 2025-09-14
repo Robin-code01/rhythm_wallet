@@ -183,7 +183,7 @@ Minimal list (see `views.py` for full docs):
 - [React](https://react.dev/)
 - [Chakra UI](https://chakra-ui.com/)
 - [Mutagen](https://mutagen.readthedocs.io/)
-- [Pillow](https://python-pillow.org/)
+- [Pillow](https://github.com/python-pillow/Pillow)
 - [Vite](https://vitejs.dev/)
 
 ---
